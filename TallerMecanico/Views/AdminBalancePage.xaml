@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TallerMecanico.Views.AdminBalancePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Balance General del Taller"
+    Shell.NavBarIsVisible="True">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+
+            <!-- 1. TARJETA PRINCIPAL DEL MES ACTUAL -->
+            <Frame BackgroundColor="#1E293B" CornerRadius="16" Padding="20" HasShadow="True">
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="TOTAL DE DINERO OBTENIDO" TextColor="#94A3B8" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" />
+                    <Label x:Name="LblTotalDinero" Text="$0.00" FontSize="36" FontAttributes="Bold" TextColor="#4ADE80" HorizontalOptions="Center" />
+                    <!-- Período de fechas del mes actual -->
+                    <Frame BackgroundColor="#334155" Padding="10,4" CornerRadius="6" HorizontalOptions="Center" HasShadow="False">
+                        <Label x:Name="LblPeriodoActual" Text="01 al 30 de Noviembre" TextColor="#F8FAFC" FontSize="11" FontAttributes="Bold" />
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- 2. DESGLOSE DE INGRESOS DEL MES ACTUAL -->
+            <Label Text="Desglose del Mes Actual" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" />
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                <!-- Ingresos por Vehículos -->
+                <Frame Grid.Column="0" BackgroundColor="#EFF6FF" BorderColor="#93C5FD" CornerRadius="12" Padding="15">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="🚗 Vehículos" FontSize="12" FontAttributes="Bold" TextColor="#1E40AF" />
+                        <Label x:Name="LblIngresosVehiculos" Text="$0.00" FontSize="19" FontAttributes="Bold" TextColor="#2563EB" />
+                        <Label Text="Turnos finalizados" FontSize="11" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Ingresos por Repuestos -->
+                <Frame Grid.Column="1" BackgroundColor="#ECFDF5" BorderColor="#A7F3D0" CornerRadius="12" Padding="15">
+                    <VerticalStackLayout Spacing="4">
+                        <Label Text="📦 Mostrador" FontSize="12" FontAttributes="Bold" TextColor="#065F46" />
+                        <Label x:Name="LblIngresosRepuestos" Text="$0.00" FontSize="19" FontAttributes="Bold" TextColor="#059669" />
+                        <Label Text="Venta de repuestos" FontSize="11" TextColor="Gray" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- 3. ESTADÍSTICAS DE VEHÍCULOS DEL MES ACTUAL -->
+            <Label Text="Estadísticas de Vehículos (Mes Actual)" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" Margin="0,5,0,0" />
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
+                <Frame Grid.Column="0" BackgroundColor="#F0FDF4" BorderColor="#86EFAC" CornerRadius="12" Padding="15">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="Vehículos Atendidos" FontSize="12" TextColor="#166534" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label x:Name="LblVehiculosAtendidos" Text="0" FontSize="26" FontAttributes="Bold" TextColor="#16A34A" HorizontalOptions="Center" />
+                        <Label Text="Trabajos completados" FontSize="10" TextColor="Gray" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Frame>
+
+                <Frame Grid.Column="1" BackgroundColor="#FEF2F2" BorderColor="#FECACA" CornerRadius="12" Padding="15">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label Text="Turnos Cancelados" FontSize="12" TextColor="#991B1B" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <Label x:Name="LblVehiculosCancelados" Text="0" FontSize="26" FontAttributes="Bold" TextColor="#DC2626" HorizontalOptions="Center" />
+                        <Label Text="Sin concretar" FontSize="10" TextColor="Gray" HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+            <!-- ALERTA DE STOCK CRÍTICO (si aplica) -->
+            <Frame x:Name="FrameStockAlerta" IsVisible="False" BackgroundColor="#FEF2F2" BorderColor="#EF4444" CornerRadius="12" Padding="12">
+                <Grid ColumnDefinitions="Auto, *">
+                    <Label Grid.Column="0" Text="⚠️" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0" />
+                    <VerticalStackLayout Grid.Column="1" Spacing="2">
+                        <Label Text="Alerta de Inventario" FontAttributes="Bold" TextColor="#991B1B" FontSize="13" />
+                        <Label x:Name="LblStockCriticoCount" Text="0 repuestos por agotarse." TextColor="#B91C1C" FontSize="11" />
+                    </VerticalStackLayout>
+                </Grid>
+            </Frame>
+
+            <!-- BOTÓN ACTUALIZAR -->
+            <Button Text="🔄 Actualizar Balance" BackgroundColor="#2563EB" TextColor="White" HeightRequest="45" CornerRadius="8" Clicked="OnActualizarClicked" />
+
+            <!-- 4. HISTORIAL DE SALDOS POR MES -->
+            <Label Text="Historial Mensual de Balances" FontAttributes="Bold" FontSize="18" TextColor="#1E293B" Margin="0,15,0,0" />
+            <Label Text="Evolución de ingresos y trabajos mes a mes:" TextColor="#64748B" FontSize="12" />
+
+            <CollectionView x:Name="CvHistorialMeses" SelectionMode="None">
+                <CollectionView.EmptyView>
+                    <Label Text="Aún no hay registros de meses anteriores." TextColor="Gray" HorizontalOptions="Center" Margin="0,15" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="15" BorderColor="#CBD5E1" BackgroundColor="White" CornerRadius="12" HasShadow="True">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*, Auto">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label Text="{Binding NombreMes}" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" />
+                                        <Label Text="{Binding RangoFechas}" TextColor="#64748B" FontSize="11" />
+                                    </VerticalStackLayout>
+                                    <Label Grid.Column="1" Text="{Binding TotalMes, StringFormat='${0:N2}'}" 
+                                           FontAttributes="Bold" FontSize="18" TextColor="#16A34A" VerticalOptions="Center" />
+                                </Grid>
+
+                                <Line BackgroundColor="#F1F5F9" HeightRequest="1" Margin="0,4" />
+
+                                <Grid ColumnDefinitions="*, *, *">
+                                    <VerticalStackLayout Grid.Column="0">
+                                        <Label Text="Vehículos" FontSize="10" TextColor="#64748B" />
+                                        <Label Text="{Binding IngresosVehiculos, StringFormat='${0:N2}'}" FontAttributes="Bold" FontSize="12" TextColor="#2563EB" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="1">
+                                        <Label Text="Repuestos" FontSize="10" TextColor="#64748B" />
+                                        <Label Text="{Binding IngresosRepuestos, StringFormat='${0:N2}'}" FontAttributes="Bold" FontSize="12" TextColor="#059669" />
+                                    </VerticalStackLayout>
+                                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="End">
+                                        <Label Text="Atendidos" FontSize="10" TextColor="#64748B" />
+                                        <Label Text="{Binding AutosAtendidos, StringFormat='{0} autos'}" FontAttributes="Bold" FontSize="12" TextColor="#1E293B" />
+                                    </VerticalStackLayout>
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

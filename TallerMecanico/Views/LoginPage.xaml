@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TallerMecanico.Views.LoginPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Iniciar Sesión"
+    Shell.NavBarIsVisible="False"
+    BackgroundColor="#F8FAFC">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,20" Spacing="16" VerticalOptions="Center">
+
+            <!-- LOGO / ILUSTRACIÓN DEL TALLER -->
+            <Frame BackgroundColor="#1E293B" BorderColor="#334155" CornerRadius="16" HeightRequest="130" WidthRequest="260" Padding="10" HorizontalOptions="Center" HasShadow="True">
+                <Image Source="pachi_logo.png" Aspect="AspectFit" HorizontalOptions="Center" VerticalOptions="Center" />
+            </Frame>
+
+            <!-- TÍTULO Y SUBTÍTULO -->
+            <VerticalStackLayout Spacing="2" HorizontalOptions="Center" Margin="0,5,0,0">
+                <Label Text="Sistema de Gestión Integral" FontSize="15" FontAttributes="Bold" HorizontalOptions="Center" TextColor="#1E40AF" />
+            </VerticalStackLayout>
+
+            <!-- TARJETA DEL FORMULARIO -->
+            <Frame BackgroundColor="White" BorderColor="#E2E8F0" CornerRadius="16" Padding="20" HasShadow="True" Margin="0,10,0,0">
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- Campo Usuario -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Usuario" FontAttributes="Bold" FontSize="13" TextColor="#334155" />
+                        <Frame BackgroundColor="#F8FAFC" BorderColor="#CBD5E1" CornerRadius="8" Padding="12,2" HasShadow="False">
+                            <Entry x:Name="TxtUsuario" Placeholder="Ingresa tu usuario" MaxLength="50" FontSize="14" />
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Campo Contraseña -->
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Contraseña (Máx 6 caracteres)" FontAttributes="Bold" FontSize="13" TextColor="#334155" />
+                        <Frame BackgroundColor="#F8FAFC" BorderColor="#CBD5E1" CornerRadius="8" Padding="12,2" HasShadow="False">
+                            <Entry x:Name="TxtPassword" Placeholder="******" IsPassword="True" MaxLength="6" FontSize="14" />
+                        </Frame>
+                    </VerticalStackLayout>
+
+                    <!-- Botón de Entrar -->
+                    <Button Text="Iniciar Sesión" BackgroundColor="#2563EB" TextColor="White" 
+                            FontAttributes="Bold" HeightRequest="48" CornerRadius="10" Margin="0,5,0,0" 
+                            Clicked="OnLoginClicked" />
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ENLACES INFERIORES -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="25" Margin="0,5,0,0">
+                <Button Text="Olvidé mi contraseña" BackgroundColor="Transparent" TextColor="#2563EB" FontSize="13" Clicked="OnForgotPasswordClicked" />
+                <Button Text="Registrarse" BackgroundColor="Transparent" TextColor="#2563EB" FontSize="13" FontAttributes="Bold" Clicked="OnRegisterClicked" />
+            </HorizontalStackLayout>
+
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="#2563EB" HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

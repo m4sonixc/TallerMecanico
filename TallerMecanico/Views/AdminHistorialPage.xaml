@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TallerMecanico.Views.AdminHistorialPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Historial de Turnos">
+
+    <Grid RowDefinitions="Auto, *">
+        <!-- Barra de Búsqueda -->
+        <SearchBar Grid.Row="0" x:Name="SbHistorial" Placeholder="Buscar por patente, auto o cliente..." 
+                   Margin="10,5" TextChanged="OnBuscarHistorialChanged" />
+
+        <RefreshView Grid.Row="1" x:Name="HistorialRefresh" Refreshing="OnRefreshing">
+            <CollectionView x:Name="CvHistorial" SelectionMode="None" Margin="10,0">
+                <CollectionView.EmptyView>
+                    <Label Text="No se encontraron turnos en el historial." HorizontalOptions="Center" VerticalOptions="Center" TextColor="Gray" Margin="0,30,0,0" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="15" BorderColor="#CBD5E1" CornerRadius="10">
+                            <VerticalStackLayout Spacing="5">
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,4">
+                                    <!-- Izquierda: Patente y Vehículo -->
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                        <Frame BackgroundColor="#1E293B" Padding="7,3" CornerRadius="5" HasShadow="False" VerticalOptions="Center">
+                                            <Label Text="{Binding Patente}" TextColor="White" FontAttributes="Bold" FontSize="11" />
+                                        </Frame>
+                                        <Label Text="{Binding MarcaVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                                        <Label Text="{Binding ModeloVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <!-- Derecha: Insignia de Estado bien separada -->
+                                    <Frame Grid.Column="1" BackgroundColor="#F0FDF4" BorderColor="#86EFAC" Padding="8,3" CornerRadius="6" VerticalOptions="Center" HasShadow="False">
+                                        <Label Text="{Binding Estado}" FontAttributes="Bold" FontSize="12" TextColor="{Binding Estado, Converter={StaticResource EstadoColorConverter}}" />
+                                    </Frame>
+                                </Grid>
+
+                                <Label Text="{Binding NombreCliente, StringFormat='Cliente: {0}'}" TextColor="#475569" />
+                                <Label Text="{Binding Problema, StringFormat='Falla: {0}'}" />
+                                <Label Text="{Binding Diagnostico, StringFormat='Diagnóstico: {0}'}" FontAttributes="Italic" />
+                                <Label Text="{Binding CostoTotal, StringFormat='Costo Final: ${0:N2}'}" FontAttributes="Bold" TextColor="#16A34A" />
+                                <Label Text="{Binding FechaFinalizacionFormateada, StringFormat='🏁 Terminado el: {0}'}" 
+                                       FontAttributes="Bold" TextColor="#16A34A" FontSize="13" />
+                                <Label Text="{Binding FechaTurno, StringFormat='Fecha original: {0:dd/MM/yyyy}'}" FontSize="11" TextColor="Gray" />
+
+                                <!-- BOTÓN COMPROBANTE WHATSAPP -->
+                                <Button Text="📄 Descargar / Compartir Comprobante" 
+                                        BackgroundColor="#059669" TextColor="White" 
+                                        HeightRequest="40" CornerRadius="6" FontSize="12" Margin="0,8,0,0"
+                                        Clicked="OnCompartirComprobanteClicked" CommandParameter="{Binding .}" />
+                                </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

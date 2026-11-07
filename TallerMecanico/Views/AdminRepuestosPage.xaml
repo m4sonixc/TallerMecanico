@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TallerMecanico.Views.AdminRepuestosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Catálogo de Repuestos">
+
+    <Grid RowDefinitions="Auto, *">
+        <Frame Grid.Row="0" Margin="10" Padding="15" BorderColor="#93C5FD" CornerRadius="8">
+            <VerticalStackLayout Spacing="8">
+                <Label Text="Gestionar Repuesto" FontAttributes="Bold" FontSize="16" TextColor="#1E40AF" />
+                <Entry x:Name="TxtNombreRepuesto" Placeholder="Nombre del repuesto" />
+                <HorizontalStackLayout Spacing="10">
+                    <Entry x:Name="TxtStockRepuesto" Placeholder="Stock" Keyboard="Numeric" WidthRequest="100" />
+                    <Entry x:Name="TxtPrecioRepuesto" Placeholder="Precio Unitario ($)" Keyboard="Numeric" WidthRequest="150" />
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="10">
+                    <Button Text="Guardar" BackgroundColor="#2563EB" TextColor="White" Clicked="OnGuardarRepuestoClicked" />
+                    <Button x:Name="BtnCancelarEdicion" Text="Cancelar" BackgroundColor="Gray" TextColor="White" IsVisible="False" Clicked="OnCancelarEdicionClicked" />
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </Frame>
+
+        <VerticalStackLayout Grid.Row="1" Spacing="5" Margin="10,0">
+            <!-- Barra de búsqueda en tiempo real -->
+            <SearchBar x:Name="SbRepuestos" Placeholder="Buscar repuesto por nombre..." TextChanged="OnBuscarRepuestoChanged" />
+            <CollectionView x:Name="CvRepuestos">
+                <CollectionView.EmptyView>
+                    <Label Text="No se encontraron repuestos." HorizontalOptions="Center" TextColor="Gray" Margin="0,20,0,0" />
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,4" Padding="10" BorderColor="#E2E8F0" CornerRadius="8">
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <VerticalStackLayout Grid.Column="0">
+                                    <Label Text="{Binding Nombre}" FontAttributes="Bold" FontSize="15" />
+                                    <Label Text="{Binding Stock, StringFormat='Stock disponible: {0}'}" TextColor="#475569" />
+                                    <Label Text="{Binding PrecioUnitario, StringFormat='Precio: ${0:N2}'}" TextColor="#16A34A" FontAttributes="Bold" />
+                                </VerticalStackLayout>
+                                <Button Grid.Column="1" Text="Editar" BackgroundColor="#F59E0B" TextColor="White" Margin="5" Clicked="OnEditarRepuestoClicked" CommandParameter="{Binding .}" />
+                                <Button Grid.Column="2" Text="Eliminar" BackgroundColor="#EF4444" TextColor="White" Margin="5" Clicked="OnEliminarRepuestoClicked" CommandParameter="{Binding .}" />
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage>

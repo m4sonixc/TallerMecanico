@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TallerMecanico.Views.UserMisTurnosPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Panel del Cliente"
+    Shell.NavBarIsVisible="False">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *">
+        <!-- 1. Encabezado de Bienvenida y Cerrar Sesión -->
+        <Frame Grid.Row="0" BackgroundColor="#0F766E" Padding="20,15" CornerRadius="0" HasShadow="True">
+            <Grid ColumnDefinitions="*, Auto">
+                <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
+                    <Label x:Name="LblBienvenida" Text="Bienvenido" FontSize="20" FontAttributes="Bold" TextColor="White" />
+                    <Label Text="PachiTaller - Portal de Clientes" FontSize="13" TextColor="#CCFBF1" />
+                </VerticalStackLayout>
+                <Button Grid.Column="1" Text="Salir" BackgroundColor="#DC2626" TextColor="White" HeightRequest="36" CornerRadius="6" FontSize="12" Clicked="OnLogoutClicked" />
+            </Grid>
+        </Frame>
+        
+        <!-- ALERTA DE PRÓXIMO SERVICE (Inicialmente oculta) -->
+        <Frame Grid.Row="1" x:Name="FrameAlertaService" IsVisible="False"
+               BackgroundColor="#FEF3C7" BorderColor="#F59E0B" CornerRadius="12" Margin="15,10,15,0" Padding="15">
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnAgendarServiceAlertaClicked" />
+            </Frame.GestureRecognizers>
+            <Grid ColumnDefinitions="Auto, *">
+                <Label Grid.Column="0" Text="🔔" FontSize="26" VerticalOptions="Center" Margin="0,0,10,0" />
+                <VerticalStackLayout Grid.Column="1" Spacing="3">
+                    <Label Text="¡Recordatorio de Service!" FontAttributes="Bold" TextColor="#B45309" FontSize="14" />
+                    <Label x:Name="LblMensajeAlertaService" Text="..." TextColor="#78350F" FontSize="12" />
+                    <Label Text="👉 Toca aquí para pedir tu turno ahora" FontAttributes="Bold" TextColor="#B45309" FontSize="11" Margin="0,4,0,0" />
+                </VerticalStackLayout>
+            </Grid>
+        </Frame>
+
+        <!-- 2. Menú Central de Botones / Acciones -->
+        <Grid Grid.Row="2" ColumnDefinitions="*, *" ColumnSpacing="12" Margin="15,15,15,5">
+            <Frame Grid.Column="0" BackgroundColor="#CCFBF1" BorderColor="#0F766E" CornerRadius="12" Padding="15">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNuevoTurnoClicked" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="➕" FontSize="26" HorizontalOptions="Center" />
+                    <Label Text="Solicitar Turno" FontAttributes="Bold" TextColor="#0F766E" HorizontalOptions="Center" FontSize="14" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame Grid.Column="1" BackgroundColor="#F1F5F9" BorderColor="#64748B" CornerRadius="12" Padding="15">
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnHistorialClicked" />
+                </Frame.GestureRecognizers>
+                <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
+                    <Label Text="📋" FontSize="26" HorizontalOptions="Center" />
+                    <Label Text="Historial Autos" FontAttributes="Bold" TextColor="#334155" HorizontalOptions="Center" FontSize="14" />
+                </VerticalStackLayout>
+            </Frame>
+        </Grid>
+
+        <!-- 3. Título de Sección: Turnos Activos -->
+        <Label Grid.Row="3" Text="Tus Turnos en Taller (Activos)" FontAttributes="Bold" FontSize="16" TextColor="#0F766E" Margin="15,10,15,5" />
+
+        <!-- 4. Lista de Turnos Activos -->
+        <RefreshView Grid.Row="4" x:Name="MisTurnosRefresh" Refreshing="OnRefreshing">
+            <CollectionView x:Name="CvMisTurnos" Margin="15,0,15,10">
+                <CollectionView.EmptyView>
+                    <Frame BackgroundColor="#F8FAFC" BorderColor="#E2E8F0" Margin="0,15" Padding="20" CornerRadius="10">
+                        <Label Text="No tienes turnos activos en este momento." HorizontalOptions="Center" TextColor="Gray" />
+                    </Frame>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Margin="0,5" Padding="15" BorderColor="#CBD5E1" CornerRadius="10">
+                            <VerticalStackLayout Spacing="6">
+                                <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,4">
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                        <Frame BackgroundColor="#0F766E" Padding="7,3" CornerRadius="5" HasShadow="False" VerticalOptions="Center">
+                                            <Label Text="{Binding Patente}" TextColor="White" FontAttributes="Bold" FontSize="11" />
+                                        </Frame>
+                                        <Label Text="{Binding MarcaVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                                        <Label Text="{Binding ModeloVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+
+                                    <Frame Grid.Column="1" BackgroundColor="#F8FAFC" BorderColor="#CBD5E1" Padding="8,3" CornerRadius="6" VerticalOptions="Center" HasShadow="False">
+                                        <Label Text="{Binding Estado}" FontAttributes="Bold" FontSize="12" TextColor="{Binding Estado, Converter={StaticResource EstadoColorConverter}}" />
+                                    </Frame>
+                                </Grid>
+
+                                <Label Text="{Binding Problema, StringFormat='Motivo/Problema: {0}'}" LineBreakMode="WordWrap" />
+                                <Label Text="{Binding Diagnostico, StringFormat='Diagnóstico de Taller: {0}'}" TextColor="#334155" FontAttributes="Italic" />
+
+                                <!-- Fecha estimada de entrega si el mecánico la ingresó -->
+                                <Frame BackgroundColor="#FEF3C7" BorderColor="#F59E0B" Padding="8" CornerRadius="6"
+                       IsVisible="{Binding FechaEstimadaEntrega, Converter={StaticResource EstadoColorConverter}, TargetNullValue=False}">
+                                    <Label Text="{Binding FechaEstimadaEntrega, StringFormat='📅 Fecha estimada de entrega: {0:dd/MM/yyyy}'}" 
+                           FontAttributes="Bold" TextColor="#B45309" FontSize="13" />
+                                </Frame>
+                                <Label Text="{Binding CostoTotal, StringFormat='Presupuesto estimado: ${0:N2}'}" FontAttributes="Bold" TextColor="#16A34A" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>
