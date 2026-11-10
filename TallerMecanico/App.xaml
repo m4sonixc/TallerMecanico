@@ -9,7 +9,6 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
             <converters:EstadoColorConverter x:Key="EstadoColorConverter" />
         </ResourceDictionary>
     </Application.Resources>

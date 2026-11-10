@@ -7,11 +7,10 @@
     Shell.NavBarIsVisible="True">
 
     <Grid RowDefinitions="Auto, *, Auto">
-        <!-- 1. Barra de Búsqueda -->
+        <!-- barra de busqueda -->
         <SearchBar Grid.Row="0" x:Name="SbVentaRepuestos" Placeholder="Buscar repuesto por nombre..." 
                    Margin="15,5" TextChanged="OnBuscarVentaChanged" />
-
-        <!-- 2. Lista de Repuestos (sin RefreshView que bloquee la altura inicial) -->
+        <!-- lista de repuestos , se soluciono problema que congelaba la interfaz -->
         <CollectionView Grid.Row="1" x:Name="CvVentaRepuestos" Margin="15,0,15,10">
             <CollectionView.EmptyView>
                 <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Margin="0,40,0,0">
@@ -28,13 +27,11 @@
                                 <Label Text="{Binding StockDisponible, StringFormat='Stock en Taller: {0} un.'}" TextColor="#475569" FontSize="12" />
                                 <Label Text="{Binding PrecioUnitario, StringFormat='Precio Unitario: ${0:N2}'}" TextColor="#16A34A" FontAttributes="Bold" FontSize="14" />
                             </VerticalStackLayout>
-
-                            <!-- Entrada de Cantidad a Vender -->
+                            <!--cantidad a vender-->
                             <HorizontalStackLayout Grid.Column="1" Grid.Row="0" VerticalOptions="Center" Spacing="6">
                                 <Label Text="Cant:" VerticalOptions="Center" FontAttributes="Bold" />
                                 <Entry Text="{Binding CantidadVenta, Mode=TwoWay}" Keyboard="Numeric" WidthRequest="60" HorizontalTextAlignment="Center" TextChanged="OnCantidadChanged" />
                             </HorizontalStackLayout>
-
                             <Label Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Text="{Binding Subtotal, StringFormat='Subtotal: ${0:N2}'}" 
                                    TextColor="#0F766E" FontAttributes="Bold" HorizontalOptions="End" Margin="0,5,0,0" />
                         </Grid>
@@ -42,15 +39,13 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- 3. Barra Inferior: Total y Botón Vender -->
+        <!-- total a cobrar y boyon de venta -->
         <Frame Grid.Row="2" BackgroundColor="#1E293B" Padding="20,15" CornerRadius="0" HasShadow="True">
             <Grid ColumnDefinitions="*, Auto">
                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
                     <Label Text="Total a Cobrar:" TextColor="#94A3B8" FontSize="12" />
                     <Label x:Name="LblTotalVenta" Text="$0.00" TextColor="#4ADE80" FontSize="22" FontAttributes="Bold" />
                 </VerticalStackLayout>
-
                 <Button Grid.Column="1" Text="💰 Realizar Venta" BackgroundColor="#16A34A" TextColor="White" 
                         FontAttributes="Bold" HeightRequest="48" CornerRadius="8" Padding="20,0" Clicked="OnRealizarVentaClicked" />
             </Grid>

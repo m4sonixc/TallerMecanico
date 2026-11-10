@@ -7,15 +7,14 @@
     Shell.NavBarIsVisible="True">
 
     <ScrollView>
+        <!-- seccion de crear nueva cuenta -->
         <VerticalStackLayout Padding="25" Spacing="15">
             <Label Text="Crear Nueva Cuenta" FontSize="24" FontAttributes="Bold" TextColor="#2563EB" />
-
             <Entry x:Name="TxtNombre" Placeholder="Nombre" />
             <Entry x:Name="TxtApellido" Placeholder="Apellido" />
             <Entry x:Name="TxtTelefono" Placeholder="Teléfono" Keyboard="Telephone" />
             <Entry x:Name="TxtUsername" Placeholder="Usuario" />
             <Entry x:Name="TxtPassword" Placeholder="Contraseña (Máx 6 caracteres)" IsPassword="True" MaxLength="6" />
-
             <Button Text="Registrarse" BackgroundColor="#2563EB" TextColor="White" HeightRequest="50" CornerRadius="8" Clicked="OnRegisterSubmitClicked" />
             <Button Text="Volver al Login" BackgroundColor="Transparent" TextColor="Gray" Clicked="OnVolverClicked" />
         </VerticalStackLayout>

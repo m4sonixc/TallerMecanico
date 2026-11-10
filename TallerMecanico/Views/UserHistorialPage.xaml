@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Historial de Mis Vehículos"
     Shell.NavBarIsVisible="True">
-
+    <!--seccion de historial del usuario  -->
     <RefreshView x:Name="HistorialRefresh" Refreshing="OnRefreshing">
         <CollectionView x:Name="CvHistorialUsuario" Margin="15">
             <CollectionView.EmptyView>
@@ -15,7 +15,7 @@
                 <DataTemplate>
                     <Frame Margin="0,6" Padding="15" BorderColor="#CBD5E1" CornerRadius="10">
                         <VerticalStackLayout Spacing="5">
-                            <!-- Cabecera: Patente, Vehículo y Estado separados -->
+                            <!-- patente , vehicuo y estados separados -->
                             <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,4">
                                 <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
                                     <Frame BackgroundColor="#0F766E" Padding="7,3" CornerRadius="5" HasShadow="False" VerticalOptions="Center">
@@ -24,26 +24,22 @@
                                     <Label Text="{Binding MarcaVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                     <Label Text="{Binding ModeloVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                 </HorizontalStackLayout>
-
                                 <Frame Grid.Column="1" BackgroundColor="#F0FDF4" BorderColor="#86EFAC" Padding="8,3" CornerRadius="6" VerticalOptions="Center" HasShadow="False">
                                     <Label Text="{Binding Estado}" FontAttributes="Bold" FontSize="12"
                                            TextColor="{Binding Estado, Converter={StaticResource EstadoColorConverter}}" />
                                 </Frame>
                             </Grid>
-
                             <Label Text="{Binding Problema, StringFormat='Falla: {0}'}" />
                             <Label Text="{Binding Diagnostico, StringFormat='Trabajo Realizado: {0}'}" TextColor="#334155" FontAttributes="Italic" />
                             <Label Text="{Binding CostoTotal, StringFormat='Total Abonado: ${0:N2}'}" FontAttributes="Bold" TextColor="#16A34A" />
                             <Label Text="{Binding FechaFinalizacionFormateada, StringFormat='🏁 Trabajo finalizado el: {0}'}" 
                                    FontAttributes="Bold" TextColor="#16A34A" FontSize="13" />
                             <Label Text="{Binding FechaTurno, StringFormat='Fecha de ingreso original: {0:dd/MM/yyyy}'}" FontSize="11" TextColor="Gray" />
-
-                            <!-- AQUÍ VA EL BOTÓN DE DESCARGA PARA EL CLIENTE: -->
+                            <!-- boton de descargar el comprobante para el cliente  -->
                             <Button Text="📄 Descargar / Ver Comprobante" 
                                     BackgroundColor="#0F766E" TextColor="White" 
                                     HeightRequest="38" CornerRadius="6" FontSize="12" Margin="0,8,0,0"
                                     Clicked="OnDescargarComprobanteClienteClicked" CommandParameter="{Binding .}" />
-
                         </VerticalStackLayout>
                     </Frame>
                 </DataTemplate>

@@ -66,8 +66,8 @@ public partial class AdminBalancePage : ContentPage
 
             var ventasMesActual = todasVentas.Where(v =>
             {
-                var f = v.CreatedAt ?? DateTime.MinValue;
-                return f >= inicioMesActual && f <= finMesActual.AddDays(1);
+                var f = (v.CreatedAt ?? DateTime.UtcNow).ToLocalTime();
+                return f.Year == hoy.Year && f.Month == hoy.Month;
             }).ToList();
 
             decimal ingresosRepuestosMes = ventasMesActual.Sum(v => v.Subtotal);
@@ -76,11 +76,10 @@ public partial class AdminBalancePage : ContentPage
             // 2. AGRUPAR TODOS LOS MESES PARA EL HISTORIAL INFERIOR
             var listaMeses = new List<BalanceMesItem>();
 
-            // Extraemos todos los años y meses únicos que tengan actividad
-            var fechasTurnos = todosTurnos.Select(t => t.FechaFinalizacion ?? t.CreatedAt ?? DateTime.MinValue);
-            var fechasVentas = todasVentas.Select(v => v.CreatedAt ?? DateTime.MinValue);
+            
+            var fechasTurnos = todosTurnos.Select(t => (t.FechaFinalizacion ?? t.CreatedAt ?? DateTime.UtcNow).ToLocalTime());
+            var fechasVentas = todasVentas.Select(v => (v.CreatedAt ?? DateTime.UtcNow).ToLocalTime());
             var periodos = fechasTurnos.Concat(fechasVentas)
-                .Where(f => f > DateTime.MinValue)
                 .Select(f => new { f.Year, f.Month })
                 .Distinct()
                 .OrderByDescending(p => p.Year)
@@ -106,8 +105,8 @@ public partial class AdminBalancePage : ContentPage
                 // Ventas del mes p
                 var ventasDelMes = todasVentas.Where(v =>
                 {
-                    var f = v.CreatedAt ?? DateTime.MinValue;
-                    return f >= inicioPeriodo && f <= finPeriodo.AddDays(1);
+                    var f = (v.CreatedAt ?? DateTime.UtcNow).ToLocalTime();
+                    return f.Year == p.Year && f.Month == p.Month;
                 }).ToList();
 
                 decimal ingRepuestosP = ventasDelMes.Sum(v => v.Subtotal);

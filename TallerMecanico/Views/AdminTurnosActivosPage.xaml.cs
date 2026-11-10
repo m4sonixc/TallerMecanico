@@ -30,7 +30,7 @@ public partial class AdminTurnosActivosPage : ContentPage
     private async Task CargarTodosTurnos()
     {
         try
-        {
+        {   // carga todos los turnos de la base de datos, tanto solicitados como activos, y los filtra según el estado
             await _supabaseService.InitializeAsync();
             var turnosRes = await _supabaseService.Client.From<Turno>().Get();
             var usuariosRes = await _supabaseService.Client.From<Usuario>().Get();
@@ -43,16 +43,16 @@ public partial class AdminTurnosActivosPage : ContentPage
                 {
                     t.NombreCliente = $"{user.Nombre} {user.Apellido}";
                     t.TelefonoCliente = user.Telefono;
-                }
+                }// traermos la lista de usuarios y la convertimos en un diccionario para poder acceder a los datos del usuario de cada turno
             }
 
-            // 1. Turnos Solicitados (pendientes de aceptar por el mecánico)
+            // los que tienen estado solicitado
             _solicitadosOriginal = todos
                 .Where(t => t.Estado == "Solicitado")
                 .OrderBy(t => t.FechaTurno)
                 .ToList();
 
-            // 2. Turnos Activos (ya aceptados, reprogramados o en proceso en taller)
+            // 2los que tienen estado aceptado , reprogramado o en proceso
             _activosOriginal = todos
                 .Where(t => t.Estado == "Aceptado" || t.Estado == "Reprogramado" || t.Estado == "En Proceso")
                 .OrderBy(t => t.FechaTurno)
@@ -73,7 +73,7 @@ public partial class AdminTurnosActivosPage : ContentPage
     private void OnBuscarTurnosChanged(object sender, TextChangedEventArgs e)
     {
         FiltrarListas(e.NewTextValue);
-    }
+    }// cada vez que el usuario escribe en la barra de búsqueda, se filtra la lista de turnos solicitados y activos según el texto ingresado
 
     private void FiltrarListas(string? filtro)
     {
@@ -88,7 +88,7 @@ public partial class AdminTurnosActivosPage : ContentPage
             CvSolicitados.ItemsSource = _solicitadosOriginal.Where(t => CumpleFiltro(t, f)).ToList();
             CvActivos.ItemsSource = _activosOriginal.Where(t => CumpleFiltro(t, f)).ToList();
         }
-    }
+    }//convierte lo escrito en minuscula y busca coincidencias en patente, marca, modelo o nombre del cliente. Si no hay texto, muestra todas las listas.
 
     private bool CumpleFiltro(Turno t, string f)
     {
@@ -98,14 +98,14 @@ public partial class AdminTurnosActivosPage : ContentPage
                (!string.IsNullOrEmpty(t.NombreCliente) && t.NombreCliente.ToLower().Contains(f));
     }
 
-    // Toggle Desplegable: Turnos Solicitados
+    // si es true es visible y si es false se oculta la lista de turnos solicitados
     private void OnToggleSolicitadosClicked(object? sender, EventArgs e)
     {
         PanelSolicitados.IsVisible = !PanelSolicitados.IsVisible;
         LblFlechaSolicitados.Text = PanelSolicitados.IsVisible ? "▼" : "▲";
     }
 
-    // Toggle Desplegable: Turnos Activos
+    
     private void OnToggleActivosClicked(object? sender, EventArgs e)
     {
         PanelActivos.IsVisible = !PanelActivos.IsVisible;

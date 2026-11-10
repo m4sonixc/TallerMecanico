@@ -9,22 +9,22 @@
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
 
-            <!-- 1. TARJETA PRINCIPAL DEL MES ACTUAL -->
+            <!-- tarjeta principal -->
             <Frame BackgroundColor="#1E293B" CornerRadius="16" Padding="20" HasShadow="True">
                 <VerticalStackLayout Spacing="6" HorizontalOptions="Center">
                     <Label Text="TOTAL DE DINERO OBTENIDO" TextColor="#94A3B8" FontSize="12" FontAttributes="Bold" HorizontalOptions="Center" />
                     <Label x:Name="LblTotalDinero" Text="$0.00" FontSize="36" FontAttributes="Bold" TextColor="#4ADE80" HorizontalOptions="Center" />
-                    <!-- Período de fechas del mes actual -->
+                    <!-- periodo de fechas del mes actual -->
                     <Frame BackgroundColor="#334155" Padding="10,4" CornerRadius="6" HorizontalOptions="Center" HasShadow="False">
-                        <Label x:Name="LblPeriodoActual" Text="01 al 30 de Noviembre" TextColor="#F8FAFC" FontSize="11" FontAttributes="Bold" />
+                        <Label x:Name="LblPeriodoActual" Text="01 al 30 de Noviembre" TextColor="#F8FAFC" FontSize="11" FontAttributes="Bold" /><!-- -->
                     </Frame>
                 </VerticalStackLayout>
             </Frame>
 
-            <!-- 2. DESGLOSE DE INGRESOS DEL MES ACTUAL -->
+            <!-- mes actual -->
             <Label Text="Desglose del Mes Actual" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" />
             <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
-                <!-- Ingresos por Vehículos -->
+                <!-- ingresos por vehículos -->
                 <Frame Grid.Column="0" BackgroundColor="#EFF6FF" BorderColor="#93C5FD" CornerRadius="12" Padding="15">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="🚗 Vehículos" FontSize="12" FontAttributes="Bold" TextColor="#1E40AF" />
@@ -33,7 +33,7 @@
                     </VerticalStackLayout>
                 </Frame>
 
-                <!-- Ingresos por Repuestos -->
+                <!-- ingresos por repuestos -->
                 <Frame Grid.Column="1" BackgroundColor="#ECFDF5" BorderColor="#A7F3D0" CornerRadius="12" Padding="15">
                     <VerticalStackLayout Spacing="4">
                         <Label Text="📦 Mostrador" FontSize="12" FontAttributes="Bold" TextColor="#065F46" />
@@ -43,7 +43,7 @@
                 </Frame>
             </Grid>
 
-            <!-- 3. ESTADÍSTICAS DE VEHÍCULOS DEL MES ACTUAL -->
+            <!-- estadisticas  -->
             <Label Text="Estadísticas de Vehículos (Mes Actual)" FontAttributes="Bold" FontSize="16" TextColor="#1E293B" Margin="0,5,0,0" />
             <Grid ColumnDefinitions="*, *" ColumnSpacing="12">
                 <Frame Grid.Column="0" BackgroundColor="#F0FDF4" BorderColor="#86EFAC" CornerRadius="12" Padding="15">
@@ -53,6 +53,7 @@
                         <Label Text="Trabajos completados" FontSize="10" TextColor="Gray" HorizontalOptions="Center" />
                     </VerticalStackLayout>
                 </Frame>
+                
 
                 <Frame Grid.Column="1" BackgroundColor="#FEF2F2" BorderColor="#FECACA" CornerRadius="12" Padding="15">
                     <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
@@ -63,7 +64,7 @@
                 </Frame>
             </Grid>
 
-            <!-- ALERTA DE STOCK CRÍTICO (si aplica) -->
+            <!-- alerta de stock crítico -->
             <Frame x:Name="FrameStockAlerta" IsVisible="False" BackgroundColor="#FEF2F2" BorderColor="#EF4444" CornerRadius="12" Padding="12">
                 <Grid ColumnDefinitions="Auto, *">
                     <Label Grid.Column="0" Text="⚠️" FontSize="22" VerticalOptions="Center" Margin="0,0,10,0" />
@@ -74,10 +75,10 @@
                 </Grid>
             </Frame>
 
-            <!-- BOTÓN ACTUALIZAR -->
+            <!--boton de actualizar -->
             <Button Text="🔄 Actualizar Balance" BackgroundColor="#2563EB" TextColor="White" HeightRequest="45" CornerRadius="8" Clicked="OnActualizarClicked" />
-
-            <!-- 4. HISTORIAL DE SALDOS POR MES -->
+            
+            <!-- historial de balances -->
             <Label Text="Historial Mensual de Balances" FontAttributes="Bold" FontSize="18" TextColor="#1E293B" Margin="0,15,0,0" />
             <Label Text="Evolución de ingresos y trabajos mes a mes:" TextColor="#64748B" FontSize="12" />
 
@@ -87,6 +88,7 @@
                 </CollectionView.EmptyView>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
+                        <!-- elemento del historial de balances -->
                         <Frame Margin="0,5" Padding="15" BorderColor="#CBD5E1" BackgroundColor="White" CornerRadius="12" HasShadow="True">
                             <VerticalStackLayout Spacing="6">
                                 <Grid ColumnDefinitions="*, Auto">
@@ -99,13 +101,13 @@
                                 </Grid>
 
                                 <Line BackgroundColor="#F1F5F9" HeightRequest="1" Margin="0,4" />
-
+                                <!-- desglose de ingresos -->
                                 <Grid ColumnDefinitions="*, *, *">
                                     <VerticalStackLayout Grid.Column="0">
                                         <Label Text="Vehículos" FontSize="10" TextColor="#64748B" />
                                         <Label Text="{Binding IngresosVehiculos, StringFormat='${0:N2}'}" FontAttributes="Bold" FontSize="12" TextColor="#2563EB" />
                                     </VerticalStackLayout>
-                                    <VerticalStackLayout Grid.Column="1">
+                                    <VerticalStackLayout Grid.Column="1"> 
                                         <Label Text="Repuestos" FontSize="10" TextColor="#64748B" />
                                         <Label Text="{Binding IngresosRepuestos, StringFormat='${0:N2}'}" FontAttributes="Bold" FontSize="12" TextColor="#059669" />
                                     </VerticalStackLayout>

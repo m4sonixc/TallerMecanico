@@ -2,7 +2,7 @@ using TallerMecanico.Views;
 
 namespace TallerMecanico;
 
-public partial class AdminShell : Shell
+public partial class AdminShell : Shell //tiene como pagina raiz el panel admin , y contiene las paginas de detalle de turno, historial, repuestos, venta de repuestos y balance
 {
     public AdminShell()
     {

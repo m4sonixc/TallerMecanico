@@ -5,9 +5,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Panel del Cliente"
     Shell.NavBarIsVisible="False">
-
+    <!-- seccion de panel del cliente osea los turnos-->
     <Grid RowDefinitions="Auto, Auto, Auto, *">
-        <!-- 1. Encabezado de Bienvenida y Cerrar Sesión -->
+        <!-- bienvenida y cerrar sesión -->
         <Frame Grid.Row="0" BackgroundColor="#0F766E" Padding="20,15" CornerRadius="0" HasShadow="True">
             <Grid ColumnDefinitions="*, Auto">
                 <VerticalStackLayout Grid.Column="0" VerticalOptions="Center">
@@ -17,8 +17,7 @@
                 <Button Grid.Column="1" Text="Salir" BackgroundColor="#DC2626" TextColor="White" HeightRequest="36" CornerRadius="6" FontSize="12" Clicked="OnLogoutClicked" />
             </Grid>
         </Frame>
-        
-        <!-- ALERTA DE PRÓXIMO SERVICE (Inicialmente oculta) -->
+        <!-- esta es la alerta del proximo service que inicialmente va a estar oculta -->
         <Frame Grid.Row="1" x:Name="FrameAlertaService" IsVisible="False"
                BackgroundColor="#FEF3C7" BorderColor="#F59E0B" CornerRadius="12" Margin="15,10,15,0" Padding="15">
             <Frame.GestureRecognizers>
@@ -33,8 +32,7 @@
                 </VerticalStackLayout>
             </Grid>
         </Frame>
-
-        <!-- 2. Menú Central de Botones / Acciones -->
+        <!-- botones de acciones -->
         <Grid Grid.Row="2" ColumnDefinitions="*, *" ColumnSpacing="12" Margin="15,15,15,5">
             <Frame Grid.Column="0" BackgroundColor="#CCFBF1" BorderColor="#0F766E" CornerRadius="12" Padding="15">
                 <Frame.GestureRecognizers>
@@ -45,7 +43,6 @@
                     <Label Text="Solicitar Turno" FontAttributes="Bold" TextColor="#0F766E" HorizontalOptions="Center" FontSize="14" />
                 </VerticalStackLayout>
             </Frame>
-
             <Frame Grid.Column="1" BackgroundColor="#F1F5F9" BorderColor="#64748B" CornerRadius="12" Padding="15">
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Tapped="OnHistorialClicked" />
@@ -56,11 +53,9 @@
                 </VerticalStackLayout>
             </Frame>
         </Grid>
-
-        <!-- 3. Título de Sección: Turnos Activos -->
+        <!--titulo de turnos activos  -->
         <Label Grid.Row="3" Text="Tus Turnos en Taller (Activos)" FontAttributes="Bold" FontSize="16" TextColor="#0F766E" Margin="15,10,15,5" />
-
-        <!-- 4. Lista de Turnos Activos -->
+        <!-- lista de turnos activos  -->
         <RefreshView Grid.Row="4" x:Name="MisTurnosRefresh" Refreshing="OnRefreshing">
             <CollectionView x:Name="CvMisTurnos" Margin="15,0,15,10">
                 <CollectionView.EmptyView>
@@ -80,22 +75,36 @@
                                         <Label Text="{Binding MarcaVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                         <Label Text="{Binding ModeloVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                     </HorizontalStackLayout>
-
                                     <Frame Grid.Column="1" BackgroundColor="#F8FAFC" BorderColor="#CBD5E1" Padding="8,3" CornerRadius="6" VerticalOptions="Center" HasShadow="False">
                                         <Label Text="{Binding Estado}" FontAttributes="Bold" FontSize="12" TextColor="{Binding Estado, Converter={StaticResource EstadoColorConverter}}" />
                                     </Frame>
                                 </Grid>
-
                                 <Label Text="{Binding Problema, StringFormat='Motivo/Problema: {0}'}" LineBreakMode="WordWrap" />
                                 <Label Text="{Binding Diagnostico, StringFormat='Diagnóstico de Taller: {0}'}" TextColor="#334155" FontAttributes="Italic" />
-
-                                <!-- Fecha estimada de entrega si el mecánico la ingresó -->
-                                <Frame BackgroundColor="#FEF3C7" BorderColor="#F59E0B" Padding="8" CornerRadius="6"
-                       IsVisible="{Binding FechaEstimadaEntrega, Converter={StaticResource EstadoColorConverter}, TargetNullValue=False}">
-                                    <Label Text="{Binding FechaEstimadaEntrega, StringFormat='📅 Fecha estimada de entrega: {0:dd/MM/yyyy}'}" 
-                           FontAttributes="Bold" TextColor="#B45309" FontSize="13" />
+                                <!--aca va la fecha estimada de entrega si es que el mecanico la ingreso -->
+                                <Frame BackgroundColor="#FEF3C7" BorderColor="#F59E0B" Padding="8" CornerRadius="6"  IsVisible="{Binding FechaEstimadaEntrega, Converter={StaticResource EstadoColorConverter}, TargetNullValue=False}">
+                                    <Label Text="{Binding FechaEstimadaEntrega, StringFormat='📅 Fecha estimada de entrega: {0:dd/MM/yyyy}'}" FontAttributes="Bold" TextColor="#B45309" FontSize="13" />
                                 </Frame>
                                 <Label Text="{Binding CostoTotal, StringFormat='Presupuesto estimado: ${0:N2}'}" FontAttributes="Bold" TextColor="#16A34A" />
+                                <!-- boton de cancelar para cliente solo si el estado es cancelado -->
+                                <Button Text="✖ Cancelar Solicitud de Turno" 
+                                        BackgroundColor="#FEE2E2" TextColor="#DC2626" 
+                                        BorderColor="#FCA5A5" BorderWidth="1"
+                                        HeightRequest="36" CornerRadius="6" FontSize="12" FontAttributes="Bold" Margin="0,6,0,0"
+                                        Clicked="OnCancelarTurnoClienteClicked" CommandParameter="{Binding .}">
+                                    <Button.Triggers>
+                                        <!-- si el estado es cancelado, se muestra el boton -->
+                                        <DataTrigger TargetType="Button" Binding="{Binding Estado}" Value="Aceptado">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Estado}" Value="En Proceso">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Button" Binding="{Binding Estado}" Value="Reprogramado">
+                                            <Setter Property="IsVisible" Value="False" />
+                                        </DataTrigger>
+                                    </Button.Triggers>
+                                </Button>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>

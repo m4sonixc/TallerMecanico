@@ -5,17 +5,17 @@ using TallerMecanico.Services;
 namespace TallerMecanico.Views;
 
 public partial class AdminVentaRepuestosPage : ContentPage
-{
+{// clase para la venta de repuestos, permite buscar repuestos, ingresar cantidades y realizar la venta, generando un ticket en PDF
     private readonly SupabaseService _supabaseService;
-    private List<RepuestoVentaItem> _todosItemsVenta = new();
-    public ObservableCollection<RepuestoVentaItem> ItemsMostrados { get; set; } = new();
+    private List<RepuestoVentaItem> _todosItemsVenta = new();// guarda en memoria todos los repuestos disponibles para poder filtrarlos sin tener que consultar la base de datos cada vez
+    public ObservableCollection<RepuestoVentaItem> ItemsMostrados { get; set; } = new();// muestra los repuestos filtrados en la interfaz de usuario
 
     public AdminVentaRepuestosPage()
     {
         InitializeComponent();
         _supabaseService = Handler?.MauiContext?.Services.GetService<SupabaseService>() ?? new SupabaseService();
         CvVentaRepuestos.ItemsSource = ItemsMostrados;
-
+        //cargar los repuestos disponibles al cargar la página
         Loaded += async (s, e) => await CargarRepuestosDisponibles();
     }
 
@@ -28,7 +28,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
     private async Task CargarRepuestosDisponibles()
     {
         try
-        {
+        {// carga todos los repuestos con stock mayor a 0 desde la base de datos y los ordena por nombre
             await _supabaseService.InitializeAsync();
             var res = await _supabaseService.Client.From<Repuesto>().Get();
 
@@ -59,7 +59,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
     }
 
     private void FiltrarRepuestos(string? filtro)
-    {
+    {// filtra los repuestos según el texto ingresado en el buscador y actualiza la lista mostrada en la interfaz de usuario
         List<RepuestoVentaItem> resultado;
 
         if (string.IsNullOrWhiteSpace(filtro))
@@ -73,7 +73,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
         }
 
         MainThread.BeginInvokeOnMainThread(() =>
-        {
+        {//tiene permiso de actualizar la interfaz de usuario desde un hilo diferente al principal, evitando errores de acceso a la interfaz de usuario
             ItemsMostrados.Clear();
             foreach (var item in resultado)
             {
@@ -95,7 +95,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
     }
 
     private async void OnRealizarVentaClicked(object sender, EventArgs e)
-    {
+    {// obtiene los repuestos seleccionados para la venta y valida que las cantidades ingresadas sean válidas antes de proceder con la venta
         var seleccionados = _todosItemsVenta.Where(i => i.CantidadVenta > 0).ToList();
 
         if (!seleccionados.Any())
@@ -112,7 +112,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
                 return;
             }
         }
-
+        // calcula el total de la venta y solicita confirmación al usuario antes de proceder con la venta
         decimal totalVenta = seleccionados.Sum(i => i.Subtotal);
         bool confirmar = await DisplayAlert("Confirmar Venta", $"¿Confirmas la venta por un total de ${totalVenta:N2}?", "Sí, Vender", "Cancelar");
         if (!confirmar) return;
@@ -128,7 +128,8 @@ public partial class AdminVentaRepuestosPage : ContentPage
                     RepuestoId = item.Id,
                     Cantidad = item.CantidadVenta,
                     PrecioUnitario = item.PrecioUnitario,
-                    Subtotal = item.Subtotal
+                    Subtotal = item.Subtotal,
+                    CreatedAt = DateTime.UtcNow
                 };
                 await _supabaseService.Client.From<VentaRepuesto>().Insert(nuevaVenta);
 
@@ -145,7 +146,7 @@ public partial class AdminVentaRepuestosPage : ContentPage
                 }
             }
 
-            // Generar el archivo de ticket visual
+            // genera el ticket de venta en PDF y ofrece la opción de compartirlo
             string rutaTicket = await PdfService.GenerarTicketVentaRepuestosAsync(seleccionados, totalVenta);
 
             bool compartir = await DisplayAlert("Venta Exitosa", "¿Deseas descargar o compartir el comprobante / ticket?", "Sí, Compartir", "No");

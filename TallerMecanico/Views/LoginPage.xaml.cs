@@ -17,9 +17,9 @@ public partial class LoginPage : ContentPage
     {
         var username = TxtUsuario.Text?.Trim();
         var pass = TxtPassword.Text?.Trim();
-
+        // toma lo que el usuario escribio
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(pass))
-        {
+        { // verifica que no esten vacios
             await DisplayAlert("Validación", "Por favor ingresa usuario y contraseña.", "Aceptar");
             return;
         }
@@ -30,7 +30,7 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        LoadingIndicator.IsVisible = true;
+        LoadingIndicator.IsVisible = true; // muestra el indicador de carga
         LoadingIndicator.IsRunning = true;
 
         try
@@ -41,20 +41,20 @@ public partial class LoginPage : ContentPage
                 .From<Usuario>()
                 .Filter("username", Postgrest.Constants.Operator.Equals, username)
                 .Filter("password_hash", Postgrest.Constants.Operator.Equals, pass)
-                .Get();
+                .Get(); // consulta a la base de datos para verificar el usuario y la contraseña
 
-            var user = response.Models.FirstOrDefault();
+            var user = response.Models.FirstOrDefault(); // toma el primer usuario que coincida 
 
             if (user != null)
             {
-                SessionService.CurrentUser = user;
+                SessionService.CurrentUser = user;// si existe el usuario, lo guarda en la sesión ,
                 if (user.Rol.Equals("admin", StringComparison.OrdinalIgnoreCase))
                 {
-                    Application.Current!.MainPage = new AdminShell();
+                    Application.Current!.MainPage = new AdminShell(); // si es admin, lo redirige al panel de admin
                 }
                 else
                 {
-                    Application.Current!.MainPage = new UserShell();
+                    Application.Current!.MainPage = new UserShell(); // si es usuario normal, lo redirige al panel de usuario
                 }
             }
             else
@@ -66,7 +66,7 @@ public partial class LoginPage : ContentPage
         {
             await DisplayAlert("Error de conexión", ex.Message, "Aceptar");
         }
-        finally
+        finally // apaga la rueda de carga aunque haya habido un error
         {
             LoadingIndicator.IsRunning = false;
             LoadingIndicator.IsVisible = false;

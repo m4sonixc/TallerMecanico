@@ -1,7 +1,7 @@
 ﻿using TallerMecanico.Models;
 
 namespace TallerMecanico.Services;
-
+// arna un pdf con diseño de factura y lo guarda para poder compartirlo con el cliente, se utiliza html para poder generar un pdf con estilo y formato, ya que es mas facil de manejar que un pdf plano
 public static class PdfService
 {
     public static async Task<string> GenerarComprobanteTurnoPdfAsync(Turno turno, List<TurnoRepuesto>? repuestos = null)
@@ -10,7 +10,7 @@ public static class PdfService
         {
             var nombreArchivo = $"Comprobante_{turno.Patente}_{DateTime.Now:yyyyMMdd_HHmm}.html";
             var rutaCompleta = Path.Combine(FileSystem.CacheDirectory, nombreArchivo);
-
+            // 
             // Armar filas de repuestos si existen
             string filasRepuestos = "";
             if (repuestos != null && repuestos.Any())

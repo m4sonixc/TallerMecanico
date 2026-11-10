@@ -5,13 +5,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="Solicitar Turno"
     Shell.NavBarIsVisible="True">
-
+    <!-- seccion de solicitud de turno -->
     <ScrollView>
         <VerticalStackLayout Padding="25" Spacing="15">
             <Label Text="Datos del Solicitante" FontAttributes="Bold" TextColor="#0F766E" />
             <Entry x:Name="TxtNombreUser" IsReadOnly="True" BackgroundColor="#F1F5F9" />
             <Entry x:Name="TxtTelefonoUser" IsReadOnly="True" BackgroundColor="#F1F5F9" />
-
             <Label Text="Tipo de Servicio" FontAttributes="Bold" TextColor="#0F766E" Margin="0,5,0,0" />
             <Picker x:Name="PickerTipoServicio" SelectedIndex="0">
                 <Picker.ItemsSource>
@@ -21,17 +20,14 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
-
             <Label Text="Fecha deseada del Turno " FontAttributes="Bold" TextColor="#0F766E" />
             <DatePicker x:Name="DpFechaTurno" Format="dd/MM/yyyy" />
             <Label Text="Datos del Vehículo" FontAttributes="Bold" TextColor="#0F766E" Margin="0,5,0,0" />
             <Entry x:Name="TxtPatente" Placeholder="Patente / Matrícula (Ej: AB 123 CD)" MaxLength="20" />
             <Entry x:Name="TxtMarca" Placeholder="Marca (Ej: Toyota, Ford)" />
             <Entry x:Name="TxtModelo" Placeholder="Modelo (Ej: Corolla 2020)" />
-
             <Label Text="Descripción del Motivo / Falla" FontAttributes="Bold" TextColor="#0F766E" />
             <Editor x:Name="TxtProblema" Placeholder="Describe qué necesita el auto..." HeightRequest="90" AutoSize="TextChanges" />
-
             <Button Text="Confirmar Solicitud de Turno" BackgroundColor="#0F766E" TextColor="White" HeightRequest="50" CornerRadius="8" Clicked="OnConfirmarTurnoClicked" />
             <Button Text="Volver" BackgroundColor="Transparent" TextColor="Gray" Clicked="OnVolverClicked" />
         </VerticalStackLayout>

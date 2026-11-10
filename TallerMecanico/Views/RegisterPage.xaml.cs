@@ -3,7 +3,7 @@ using TallerMecanico.Services;
 
 namespace TallerMecanico.Views;
 
-public partial class RegisterPage : ContentPage
+public partial class RegisterPage : ContentPage 
 {
     private readonly SupabaseService _supabaseService;
 
@@ -12,7 +12,7 @@ public partial class RegisterPage : ContentPage
         InitializeComponent();
         _supabaseService = Handler?.MauiContext?.Services.GetService<SupabaseService>() ?? new SupabaseService();
     }
-
+    // hace un get a la base de datos para verificar si el usuario ya existe, y si no, lo registra
     private async void OnRegisterSubmitClicked(object sender, EventArgs e)
     {
         var nombre = TxtNombre.Text?.Trim();
@@ -30,7 +30,7 @@ public partial class RegisterPage : ContentPage
             await DisplayAlert("Validación", "Por favor completa todos los campos.", "Aceptar");
             return;
         }
-
+  
         if (password.Length > 6)
         {
             await DisplayAlert("Validación", "La contraseña debe tener máximo 6 caracteres.", "Aceptar");
@@ -41,7 +41,7 @@ public partial class RegisterPage : ContentPage
         {
             await _supabaseService.InitializeAsync();
 
-            // Usamos Filter nativo de Postgrest en lugar de lambda para evitar problemas de compatibilidad
+           
             var checkRes = await _supabaseService.Client
                 .From<Usuario>()
                 .Filter("username", Postgrest.Constants.Operator.Equals, username)
@@ -70,7 +70,7 @@ public partial class RegisterPage : ContentPage
         }
         catch (Exception ex)
         {
-            // Mostramos el mensaje detallado o la excepción interna si existe
+            // mostramos el mensaje detallado o la excepción interna si existe
             var detalle = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
             await DisplayAlert("Error", detalle, "Aceptar");
         }

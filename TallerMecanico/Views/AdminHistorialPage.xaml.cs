@@ -31,15 +31,13 @@ public partial class AdminHistorialPage : ContentPage
         try
         {
             await _supabaseService.InitializeAsync();
-            var res = await _supabaseService.Client
-                .From<Turno>()
-                .Where(t => t.Estado == "Finalizado" || t.Estado == "Cancelado")
-                .Get();
-
+            var res = await _supabaseService.Client.From<Turno>().Get();
             var usuariosRes = await _supabaseService.Client.From<Usuario>().Get();
             var dictUsuarios = usuariosRes.Models.ToDictionary(u => u.Id, u => u);
-
-            _todosHistorial = res.Models.OrderByDescending(t => t.CreatedAt).ToList();
+            _todosHistorial = res.Models
+                 .Where(t => t.Estado == "Finalizado" || (t.Estado == "Cancelado" && (!string.IsNullOrEmpty(t.Diagnostico) || t.ManoObra > 0)))
+                 .OrderByDescending(t => t.CreatedAt)
+                 .ToList();
             foreach (var t in _todosHistorial)
             {
                 if (dictUsuarios.TryGetValue(t.UsuarioId, out var user))
@@ -47,7 +45,6 @@ public partial class AdminHistorialPage : ContentPage
                     t.NombreCliente = $"{user.Nombre} {user.Apellido}";
                 }
             }
-
             FiltrarHistorial(SbHistorial.Text);
         }
         catch (Exception ex)

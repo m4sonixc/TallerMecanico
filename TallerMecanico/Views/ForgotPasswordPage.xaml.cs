@@ -17,7 +17,7 @@ public partial class ForgotPasswordPage : ContentPage
     {
         var username = TxtUserRecup.Text?.Trim();
         var pass = TxtNuevaPass.Text?.Trim();
-
+        // busca el usuario por username y si lo encuentra, actualiza la contraseña
         if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(pass))
         {
             await DisplayAlert("Validación", "Por favor completa ambos campos.", "Aceptar");
@@ -41,7 +41,7 @@ public partial class ForgotPasswordPage : ContentPage
                 await DisplayAlert("Error", "No se encontró ningún usuario con ese nombre.", "Aceptar");
                 return;
             }
-
+            // actualiza la contraseña del usuario
             user.PasswordHash = pass;
             await _supabaseService.Client.From<Usuario>().Update(user);
 

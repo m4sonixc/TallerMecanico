@@ -16,10 +16,10 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        // Registrar Servicio Supabase como Singleton
+        // es el primer archivo que se ejecuta al iniciar la aplicacion,, aqui se registran los servicios y las paginas de la aplicacion
         builder.Services.AddSingleton<SupabaseService>();
 
-        // Registrar Vistas
+        //addtransient crea una nueva ventana cada vez que se llama a la pagina, esto es util para paginas que no necesitan mantener estado entre llamadas y liberar memoria cuando se cierran
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<ForgotPasswordPage>();
@@ -33,5 +33,5 @@ public static class MauiProgram
         builder.Services.AddTransient<UserAgregarTurnoPage>();
         builder.Services.AddTransient<UserHistorialPage>();
         return builder.Build();
-    }
+    }// crea y configura la aplicación MAUI, registrando servicios y páginas para la navegación
 }

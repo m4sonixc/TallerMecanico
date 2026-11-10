@@ -6,10 +6,9 @@
     Title="Historial de Turnos">
 
     <Grid RowDefinitions="Auto, *">
-        <!-- Barra de Búsqueda -->
+        <!-- esta es la barra de búsqueda -->
         <SearchBar Grid.Row="0" x:Name="SbHistorial" Placeholder="Buscar por patente, auto o cliente..." 
                    Margin="10,5" TextChanged="OnBuscarHistorialChanged" />
-
         <RefreshView Grid.Row="1" x:Name="HistorialRefresh" Refreshing="OnRefreshing">
             <CollectionView x:Name="CvHistorial" SelectionMode="None" Margin="10,0">
                 <CollectionView.EmptyView>
@@ -20,7 +19,7 @@
                         <Frame Margin="0,5" Padding="15" BorderColor="#CBD5E1" CornerRadius="10">
                             <VerticalStackLayout Spacing="5">
                                 <Grid ColumnDefinitions="*, Auto" Margin="0,0,0,4">
-                                    <!-- Izquierda: Patente y Vehículo -->
+                                    <!-- la patente del vehiculo esta a la izquierda -->
                                     <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
                                         <Frame BackgroundColor="#1E293B" Padding="7,3" CornerRadius="5" HasShadow="False" VerticalOptions="Center">
                                             <Label Text="{Binding Patente}" TextColor="White" FontAttributes="Bold" FontSize="11" />
@@ -28,12 +27,11 @@
                                         <Label Text="{Binding MarcaVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                         <Label Text="{Binding ModeloVehiculo}" FontAttributes="Bold" FontSize="16" VerticalOptions="Center" />
                                     </HorizontalStackLayout>
-                                    <!-- Derecha: Insignia de Estado bien separada -->
+                                    <!-- el estado a la derecha  -->
                                     <Frame Grid.Column="1" BackgroundColor="#F0FDF4" BorderColor="#86EFAC" Padding="8,3" CornerRadius="6" VerticalOptions="Center" HasShadow="False">
                                         <Label Text="{Binding Estado}" FontAttributes="Bold" FontSize="12" TextColor="{Binding Estado, Converter={StaticResource EstadoColorConverter}}" />
                                     </Frame>
                                 </Grid>
-
                                 <Label Text="{Binding NombreCliente, StringFormat='Cliente: {0}'}" TextColor="#475569" />
                                 <Label Text="{Binding Problema, StringFormat='Falla: {0}'}" />
                                 <Label Text="{Binding Diagnostico, StringFormat='Diagnóstico: {0}'}" FontAttributes="Italic" />
@@ -41,8 +39,7 @@
                                 <Label Text="{Binding FechaFinalizacionFormateada, StringFormat='🏁 Terminado el: {0}'}" 
                                        FontAttributes="Bold" TextColor="#16A34A" FontSize="13" />
                                 <Label Text="{Binding FechaTurno, StringFormat='Fecha original: {0:dd/MM/yyyy}'}" FontSize="11" TextColor="Gray" />
-
-                                <!-- BOTÓN COMPROBANTE WHATSAPP -->
+                                <!-- boton de compartir el comprobante -->
                                 <Button Text="📄 Descargar / Compartir Comprobante" 
                                         BackgroundColor="#059669" TextColor="White" 
                                         HeightRequest="40" CornerRadius="6" FontSize="12" Margin="0,8,0,0"

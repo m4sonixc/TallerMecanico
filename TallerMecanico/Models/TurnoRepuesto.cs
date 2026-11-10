@@ -25,7 +25,7 @@ public class TurnoRepuesto : BaseModel
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }
 
-    // Ignoramos esta propiedad para que NO se envíe en los INSERT/UPDATE de Supabase
+    // ignoramos esta propiedad para que NO se envíe en los INSERT/UPDATE de Supabase
     [JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
     public string NombreRepuesto { get; set; } = string.Empty;

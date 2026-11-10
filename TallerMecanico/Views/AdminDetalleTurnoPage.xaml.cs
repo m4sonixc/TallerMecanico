@@ -36,13 +36,26 @@ public partial class AdminDetalleTurnoPage : ContentPage
         PickerEstado.SelectedItem = TurnoActual.Estado;
         TxtDiagnostico.Text = TurnoActual.Diagnostico;
         TxtManoObra.Text = TurnoActual.ManoObra.ToString("F2");
+        if (TurnoActual.Estado == "Finalizado" || TurnoActual.Estado == "Cancelado")
+        {
+            PanelAccionesTurno.IsVisible = false;
+        }
+        else
+        {
+            PanelAccionesTurno.IsVisible = true;
+            // solo se ve si aún no fue aceptado 
+            BtnAceptarTurno.IsVisible = TurnoActual.Estado == "Solicitado";
+            // 'Reprogramar' y 'Cancelar' siempre visibles mientras el auto esté en el taller
+            BtnReprogramarTurno.IsVisible = true;
+            BtnCancelarTurno.IsVisible = true;
+        }
 
         if (TurnoActual.FechaEstimadaEntrega.HasValue)
         {
             DpFechaEstimadaEntrega.Date = TurnoActual.FechaEstimadaEntrega.Value;
         }
 
-        // Si es Service, mostramos el campo para definir la fecha del próximo service
+        // si es service , muestra el panel de proximo service
         if (TurnoActual.TipoServicio.Equals("Service", StringComparison.OrdinalIgnoreCase))
         {
             PanelProximoService.IsVisible = true;
@@ -60,7 +73,7 @@ public partial class AdminDetalleTurnoPage : ContentPage
         TurnoActual.Estado = "Aceptado";
 
         // Ocultar botones de inmediato
-        PanelAccionesTurno.IsVisible = false;
+        BtnAceptarTurno.IsVisible = false;
         FrameReprogramar.IsVisible = false;
 
         DisplayAlert("Turno Aceptado", "El turno fue marcado como 'Aceptado'. Recuerda presionar 'Guardar Cambios'.", "Aceptar");
@@ -71,7 +84,56 @@ public partial class AdminDetalleTurnoPage : ContentPage
         FrameReprogramar.IsVisible = !FrameReprogramar.IsVisible;
         DpNuevaFecha.Date = TurnoActual.FechaTurno.AddDays(1);
     }
+    private async void OnCancelarTurnoClicked(object sender, EventArgs e)
+    {
+        // cuadro si y no
+        bool seguro = await DisplayAlert("Confirmación", "¿Está seguro de cancelar el turno?", "Sí", "No");
 
+        //si apreta no , vuelve 
+        if (!seguro) return;
+
+        try
+        {
+            await _supabaseService.InitializeAsync();
+
+            // si es que habia respuestos asignados se devuelve, si no , no hace nada 
+            if (_repuestosUsados.Any())
+            {
+                foreach (var repuestoAsignado in _repuestosUsados)
+                {
+                    var repuestoRes = await _supabaseService.Client
+                        .From<Repuesto>()
+                        .Filter("id", Postgrest.Constants.Operator.Equals, repuestoAsignado.RepuestoId.ToString())
+                        .Get();
+
+                    var repuestoReal = repuestoRes.Models.FirstOrDefault();
+                    if (repuestoReal != null)
+                    {
+                        repuestoReal.Stock += repuestoAsignado.Cantidad;
+                        await _supabaseService.Client.From<Repuesto>().Update(repuestoReal);
+                    }
+                }
+            }
+
+            // marca como cancelado y pone costo total y mano de obra en 0 y fecha de finalizacion en ahora
+            TurnoActual.Estado = "Cancelado";
+            TurnoActual.CostoTotal = 0;
+            TurnoActual.ManoObra = 0;
+            TurnoActual.FechaFinalizacion = DateTime.UtcNow;
+
+            await _supabaseService.Client.From<Turno>().Update(TurnoActual);
+
+            // cartel
+            await DisplayAlert("Aviso", "Turno cancelado", "Aceptar");
+
+            //inmediatamente vuelve a la pagina anterior
+            await Shell.Current.GoToAsync("..");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "Aceptar");
+        }
+    }
     private async void OnConfirmarReprogramacionClicked(object sender, EventArgs e)
     {
         DateTime nuevaFecha = DpNuevaFecha.Date ?? DateTime.Today;
@@ -154,7 +216,7 @@ public partial class AdminDetalleTurnoPage : ContentPage
         decimal sumaRepuestos = _repuestosUsados.Sum(r => r.Subtotal);
         decimal total = manoObra + sumaRepuestos;
         LblCostoTotal.Text = $"Costo Total: ${total:N2}";
-    }
+    }// cada vez que se escribe un numero en mano de obra o se agrega un repuesto, se recalcula el costo total y se muestra en pantalla
 
     private void OnManoObraChanged(object sender, TextChangedEventArgs e)
     {
@@ -223,7 +285,7 @@ public partial class AdminDetalleTurnoPage : ContentPage
             TurnoActual.CostoTotal = manoObra + sumaRepuestos;
             TurnoActual.FechaEstimadaEntrega = DpFechaEstimadaEntrega.Date;
 
-            // Si se pasa a Finalizado, guardamos la fecha de finalización exacta
+            // si dice finalizado , guarda la fecha de finalizacion 
             if (nuevoEstado == "Finalizado")
             {
                 TurnoActual.FechaFinalizacion = DateTime.UtcNow;

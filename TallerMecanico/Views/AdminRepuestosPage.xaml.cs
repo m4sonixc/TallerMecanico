@@ -6,23 +6,23 @@ namespace TallerMecanico.Views;
 public partial class AdminRepuestosPage : ContentPage
 {
     private readonly SupabaseService _supabaseService;
-    private Repuesto? _repuestoSeleccionado;
+    private Repuesto? _repuestoSeleccionado; // variable para almacenar el repuesto que se está editando
 
     public AdminRepuestosPage()
     {
         InitializeComponent();
-        _supabaseService = Handler?.MauiContext?.Services.GetService<SupabaseService>() ?? new SupabaseService();
+        _supabaseService = Handler?.MauiContext?.Services.GetService<SupabaseService>() ?? new SupabaseService(); // inicializa el servicio de Supabase
     }
 
     protected override async void OnAppearing()
-    {
+    {// carga los repuestos cada vez que se muestra la página
         base.OnAppearing();
         await CargarRepuestos();
     }
 
     private List<Repuesto> _todosRepuestos = new();
     private async Task CargarRepuestos()
-    {
+    {// carga todos los repuestos desde la base de datos y los ordena por nombre
         try
         {
             await _supabaseService.InitializeAsync();
@@ -36,7 +36,7 @@ public partial class AdminRepuestosPage : ContentPage
         }
     }
     private void OnBuscarRepuestoChanged(object sender, TextChangedEventArgs e)
-    {
+    {// filtra los repuestos cada vez que se escribe en el buscador
         FiltrarRepuestos(e.NewTextValue);
     }
     private void FiltrarRepuestos(string? filtro)
@@ -44,7 +44,7 @@ public partial class AdminRepuestosPage : ContentPage
         if (string.IsNullOrWhiteSpace(filtro))
         {
             CvRepuestos.ItemsSource = _todosRepuestos;
-        }
+        }// si hay texto en el buscador, filtra los repuestos por nombre que contengan el texto ingresado
         else
         {
             var texto = filtro.Trim().ToLower();
@@ -62,7 +62,7 @@ public partial class AdminRepuestosPage : ContentPage
         {
             await DisplayAlert("Validación", "Completa todos los campos con valores correctos.", "Aceptar");
             return;
-        }
+        }// valida que los campos no esten vacios y que el stock y precio sean numeros validos
 
         try
         {
@@ -78,7 +78,7 @@ public partial class AdminRepuestosPage : ContentPage
                 await DisplayAlert("Éxito", "Repuesto agregado al catálogo.", "Aceptar");
             }
             else
-            {
+            {// si hay un repuesto seleccionado, actualiza sus datos en la base de datos
                 _repuestoSeleccionado.Nombre = TxtNombreRepuesto.Text.Trim();
                 _repuestoSeleccionado.Stock = stock;
                 _repuestoSeleccionado.PrecioUnitario = precio;
@@ -108,12 +108,12 @@ public partial class AdminRepuestosPage : ContentPage
     }
 
     private async void OnEliminarRepuestoClicked(object sender, EventArgs e)
-    {
+    {//
         if (sender is Button btn && btn.CommandParameter is Repuesto r)
         {
             bool confirm = await DisplayAlert("Confirmar", $"¿Deseas eliminar '{r.Nombre}'?", "Sí", "No");
             if (confirm)
-            {
+            {// intenta eliminar el repuesto de la base de datos, si falla porque ya fue usado en un turno, muestra un mensaje de error
                 try
                 {
                     await _supabaseService.Client.From<Repuesto>().Delete(r);
@@ -133,7 +133,7 @@ public partial class AdminRepuestosPage : ContentPage
     }
 
     private void LimpiarFormulario()
-    {
+    {// limpia los campos del formulario y oculta el boton de cancelar edicion
         _repuestoSeleccionado = null;
         TxtNombreRepuesto.Text = string.Empty;
         TxtStockRepuesto.Text = string.Empty;

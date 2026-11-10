@@ -55,7 +55,7 @@ public partial class UserHistorialPage : ContentPage
         {
             try
             {
-                // Obtener los repuestos si tuvo
+                // obtiene los repuestos asociados al turno
                 var repuestosTurno = await _supabaseService.Client
                     .From<TurnoRepuesto>()
                     .Filter("turno_id", Postgrest.Constants.Operator.Equals, t.Id.ToString())
@@ -70,10 +70,10 @@ public partial class UserHistorialPage : ContentPage
                         r.NombreRepuesto = nom;
                 }
 
-                // Generar comprobante
+                // genera comprobante en PDF y obtiene la ruta del archivo
                 string rutaArchivo = await PdfService.GenerarComprobanteTurnoPdfAsync(t, repuestosTurno.Models);
 
-                // Abrir selector nativo para guardar o compartir
+                // abre opciones para compartir el archiv
                 await Share.Default.RequestAsync(new ShareFileRequest
                 {
                     Title = $"Comprobante - {t.Patente}",

@@ -4,7 +4,7 @@ using TallerMecanico.Services;
 namespace TallerMecanico.Views;
 
 [QueryProperty(nameof(PatenteParam), "Patente")]
-[QueryProperty(nameof(MarcaParam), "Marca")]
+[QueryProperty(nameof(MarcaParam), "Marca")] //recibe los datos de la alerta de proximo service para precargar el formulario de agregar turno
 [QueryProperty(nameof(ModeloParam), "Modelo")]
 [QueryProperty(nameof(TipoParam), "Tipo")]
 public partial class UserAgregarTurnoPage : ContentPage
@@ -31,7 +31,7 @@ public partial class UserAgregarTurnoPage : ContentPage
             TxtNombreUser.Text = $"{SessionService.CurrentUser.Nombre} {SessionService.CurrentUser.Apellido}";
             TxtTelefonoUser.Text = SessionService.CurrentUser.Telefono;
         }
-        // Si vienen datos precargados desde la alerta
+        // datos precargados desde la alerta de proximo service
         if (!string.IsNullOrEmpty(PatenteParam)) TxtPatente.Text = PatenteParam;
         if (!string.IsNullOrEmpty(MarcaParam)) TxtMarca.Text = MarcaParam;
         if (!string.IsNullOrEmpty(ModeloParam)) TxtModelo.Text = ModeloParam;
@@ -55,7 +55,7 @@ public partial class UserAgregarTurnoPage : ContentPage
         {
             await _supabaseService.InitializeAsync();
 
-            // 1. Validar límite de 3 autos por fecha
+            // limite de 3 turnos por día
             var fechaStr = fechaElegida.ToString("yyyy-MM-dd");
             var turnosDelDia = await _supabaseService.Client
                 .From<Turno>()
@@ -74,7 +74,7 @@ public partial class UserAgregarTurnoPage : ContentPage
                 return;
             }
 
-            // 2. Registrar el nuevo turno con estado "Solicitado"
+            // registrar el nuevo turno
             var nuevoTurno = new Turno
             {
                 UsuarioId = SessionService.CurrentUser!.Id,

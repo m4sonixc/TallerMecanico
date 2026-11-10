@@ -20,7 +20,7 @@ public class Turno : BaseModel
     public string ModeloVehiculo { get; set; } = string.Empty;
 
     [Column("tipo_servicio")]
-    public string TipoServicio { get; set; } = "Reparación"; // "Service" o "Reparación"
+    public string TipoServicio { get; set; } = "Reparación";
 
     [Column("fecha_turno")]
     public DateTime FechaTurno { get; set; } = DateTime.Today;
@@ -55,7 +55,7 @@ public class Turno : BaseModel
     [Column("created_at")]
     public DateTime? CreatedAt { get; set; }
 
-    // Propiedades de UI
+    // creamos la propiedad NombreCliente para mostrar el nombre del cliente en la interfaz, pero no se guarda en la base de datos , evitando un error de supabase al intentar guardar un campo que no existe en la tabla
     [JsonIgnore]
     [System.Text.Json.Serialization.JsonIgnore]
     public string NombreCliente { get; set; } = string.Empty;
@@ -68,4 +68,5 @@ public class Turno : BaseModel
     [System.Text.Json.Serialization.JsonIgnore]
     public string FechaFinalizacionFormateada =>
     (FechaFinalizacion ?? CreatedAt ?? DateTime.Now).ToString("dd/MM/yyyy HH:mm");
+    // nos aseguramos de que el historial nunca quede en blanco, mostrando la fecha de creación si no hay fecha de finalización
 }

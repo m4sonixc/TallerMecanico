@@ -8,7 +8,7 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-            <!-- Datos del Cliente y Vehículo -->
+            <!-- datos del cliente -->
             <Frame BackgroundColor="#F1F5F9" Padding="12" CornerRadius="8">
                 <VerticalStackLayout Spacing="4">
                     <Label x:Name="LblVehiculo" FontAttributes="Bold" FontSize="18" />
@@ -17,17 +17,29 @@
                     <Label x:Name="LblProblema" TextColor="#334155" />
                 </VerticalStackLayout>
             </Frame>
-
-            <!-- Acciones de Aceptación y Reprogramación -->
+            <!--acciones de turno -->
             <VerticalStackLayout x:Name="PanelAccionesTurno" Spacing="8">
-                <Label Text="Acciones de Turno" FontAttributes="Bold" />
-                <Grid ColumnDefinitions="*, *" ColumnSpacing="10">
-                    <Button Grid.Column="0" Text="✔ Aceptar Turno" BackgroundColor="#16A34A" TextColor="White" Clicked="OnAceptarTurnoClicked" />
-                    <Button Grid.Column="1" Text="🔄 Reprogramar" BackgroundColor="#9333EA" TextColor="White" Clicked="OnReprogramarClicked" />
+                <Label Text="Acciones de Turno" FontAttributes="Bold" TextColor="#1E293B" />
+                <Grid x:Name="GridBotonesAccion" ColumnSpacing="8">
+                    <!-- si es solicitado 3 columnas que son las de aceptar , reprogramar, cancelar -->
+                    <!-- si fue aceptado 2 columnas que son las de reprogramar, cancelar -->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="BtnAceptarTurno" Grid.Column="0" Text=" Aceptar" BackgroundColor="#16A34A" TextColor="White" 
+                            CornerRadius="8" FontSize="12" FontAttributes="Bold" HeightRequest="44"
+                            Clicked="OnAceptarTurnoClicked" />
+                    <Button x:Name="BtnReprogramarTurno" Grid.Column="1" Text="Reprogramar" BackgroundColor="#9333EA" TextColor="White" 
+                            CornerRadius="8" FontSize="11" FontAttributes="Bold" HeightRequest="44"
+                            Clicked="OnReprogramarClicked" />
+                    <Button x:Name="BtnCancelarTurno" Grid.Column="2" Text="Cancelar" BackgroundColor="#DC2626" TextColor="White" 
+                            CornerRadius="8" FontSize="12" FontAttributes="Bold" HeightRequest="44"
+                            Clicked="OnCancelarTurnoClicked" />
                 </Grid>
             </VerticalStackLayout>
-
-            <!-- Panel de Reprogramación (inicialmente oculto) -->
+            <!-- panel de reprogramación que esta inicialmente oculto -->
             <Frame x:Name="FrameReprogramar" IsVisible="False" BackgroundColor="#FAF5FF" BorderColor="#C084FC" CornerRadius="8" Padding="10">
                 <VerticalStackLayout Spacing="8">
                     <Label Text="Nueva fecha para el turno:" FontAttributes="Bold" TextColor="#6B21A8" />
@@ -35,8 +47,7 @@
                     <Button Text="Confirmar Reprogramación" BackgroundColor="#9333EA" TextColor="White" Clicked="OnConfirmarReprogramacionClicked" />
                 </VerticalStackLayout>
             </Frame>
-
-            <!-- Estado del Turno -->
+            <!-- estado del turno -->
             <Label Text="Estado Actual" FontAttributes="Bold" />
             <Picker x:Name="PickerEstado">
                 <Picker.ItemsSource>
@@ -50,33 +61,26 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
-
-            <!-- Fecha Estimada de Entrega -->
+            <!-- fecha estimada de entrega -->
             <Label Text="Fecha Estimada de Entrega al Cliente" FontAttributes="Bold" />
             <DatePicker x:Name="DpFechaEstimadaEntrega" Format="dd/MM/yyyy" />
-
-            <!-- Próximo Service (visible solo si tipo_servicio == 'Service') -->
+            <!-- próximo service si es que esta habilitado  -->
             <VerticalStackLayout x:Name="PanelProximoService" IsVisible="False" Spacing="4">
                 <Label Text="Fecha del Próximo Service Recomendado" FontAttributes="Bold" TextColor="#0F766E" />
                 <DatePicker x:Name="DpProximoService" Format="dd/MM/yyyy" />
             </VerticalStackLayout>
-
             <Label Text="Diagnóstico Técnico" FontAttributes="Bold" />
             <Editor x:Name="TxtDiagnostico" Placeholder="Diagnóstico del taller..." AutoSize="TextChanges" HeightRequest="80" />
-
             <Label Text="Mano de Obra ($)" FontAttributes="Bold" />
             <Entry x:Name="TxtManoObra" Keyboard="Numeric" Text="0" TextChanged="OnManoObraChanged" />
-
             <Line BackgroundColor="#CBD5E1" HeightRequest="1" />
-
-            <!-- Asignación de Repuestos -->
+            <!-- aca esta la asignacion de repuestos -->
             <Label Text="Asignar Repuesto del Catálogo" FontAttributes="Bold" FontSize="16" />
             <Picker x:Name="PickerRepuestos" ItemDisplayBinding="{Binding Nombre}" Title="Selecciona un repuesto" />
             <HorizontalStackLayout Spacing="10">
                 <Entry x:Name="TxtCantidadRepuesto" Text="1" Keyboard="Numeric" WidthRequest="80" Placeholder="Cant." />
                 <Button Text="Agregar Repuesto" BackgroundColor="#0F766E" TextColor="White" Clicked="OnAgregarRepuestoClicked" />
             </HorizontalStackLayout>
-
             <Label Text="Repuestos Utilizados:" FontAttributes="Bold" />
             <CollectionView x:Name="CvRepuestosAsignados" HeightRequest="110">
                 <CollectionView.ItemTemplate>
@@ -93,12 +97,10 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-
-            <!-- Costo Total -->
+            <!-- el costo total  -->
             <Frame BackgroundColor="#FEF3C7" BorderColor="#F59E0B" CornerRadius="8">
                 <Label x:Name="LblCostoTotal" FontSize="20" FontAttributes="Bold" TextColor="#B45309" HorizontalOptions="Center" />
             </Frame>
-
             <Button Text="Guardar Cambios" BackgroundColor="#2563EB" TextColor="White" HeightRequest="50" CornerRadius="8" Clicked="OnGuardarCambiosClicked" />
             <Button Text="Volver" BackgroundColor="Transparent" TextColor="Gray" Clicked="OnVolverClicked" />
         </VerticalStackLayout>

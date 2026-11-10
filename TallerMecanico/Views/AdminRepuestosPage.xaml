@@ -20,9 +20,8 @@
                 </HorizontalStackLayout>
             </VerticalStackLayout>
         </Frame>
-
         <VerticalStackLayout Grid.Row="1" Spacing="5" Margin="10,0">
-            <!-- Barra de búsqueda en tiempo real -->
+            <!--esta es la barra de busqueda  -->
             <SearchBar x:Name="SbRepuestos" Placeholder="Buscar repuesto por nombre..." TextChanged="OnBuscarRepuestoChanged" />
             <CollectionView x:Name="CvRepuestos">
                 <CollectionView.EmptyView>

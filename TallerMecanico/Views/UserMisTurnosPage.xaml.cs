@@ -41,7 +41,7 @@ public partial class UserMisTurnosPage : ContentPage
                 .From<Turno>()
                 .Filter("usuario_id", Postgrest.Constants.Operator.Equals, SessionService.CurrentUser.Id.ToString())
                 .Get();
-            // AQUÍ VA: Carga todos los que NO estén Finalizados ni Cancelados (Solicitado, Aceptado, Reprogramado, En Proceso)
+            // carga los turnos activos del usuario, es decir, aquellos que no están finalizados ni cancelados
             var activos = res.Models
                 .Where(t => t.Estado != "Finalizado" && t.Estado != "Cancelado")
                 .OrderByDescending(t => t.CreatedAt)
@@ -69,7 +69,7 @@ public partial class UserMisTurnosPage : ContentPage
             var hoy = DateTime.Today;
             var limiteAlerta = hoy.AddDays(15);
 
-            // Buscamos algún vehículo cuyo próximo service esté a 15 días o ya vencido
+            // buscamos algún vehículo cuyo próximo service esté a 15 días o ya vencido
             _turnoProximoService = res.Models
                 .Where(t => t.FechaProximoService.HasValue && t.FechaProximoService.Value.Date <= limiteAlerta)
                 .OrderBy(t => t.FechaProximoService)
@@ -89,6 +89,33 @@ public partial class UserMisTurnosPage : ContentPage
             }
         }
         catch { }
+    }
+    private async void OnCancelarTurnoClienteClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Turno t)
+        {
+            bool seguro = await DisplayAlert("Confirmación", "¿Está seguro de cancelar este turno?", "Sí", "No");
+            if (!seguro) return;
+
+            try
+            {
+                await _supabaseService.InitializeAsync();
+
+                t.Estado = "Cancelado";
+                t.FechaFinalizacion = DateTime.UtcNow;
+
+                await _supabaseService.Client.From<Turno>().Update(t);
+
+                await DisplayAlert("Aviso", "Turno cancelado exitosamente.", "Aceptar");
+
+                // recargamos la lista de turnos activos después de cancelar uno
+                await CargarMisTurnosActivos();
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "Aceptar");
+            }
+        }
     }
     private async void OnAgendarServiceAlertaClicked(object? sender, EventArgs e)
     {

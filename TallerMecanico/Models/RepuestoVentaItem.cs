@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace TallerMecanico.Models;
 
-public class RepuestoVentaItem : INotifyPropertyChanged
+public class RepuestoVentaItem : INotifyPropertyChanged // avisa a la pantalla cuando cambia la cantidad de venta, para actualizar el subtotal sin tocar un boton
 {
     public long Id { get; set; }
     public string Nombre { get; set; } = string.Empty;
